@@ -1,0 +1,2 @@
+class TicketZonesController < ApplicationController
+end
