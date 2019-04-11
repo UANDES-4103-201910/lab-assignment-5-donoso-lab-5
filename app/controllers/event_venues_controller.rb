@@ -8,23 +8,39 @@ class EventVenuesController < ApplicationController
 
 	def create
 		@venue = EventVenue.new(venue_params)
-		if @venue.save
-			redirect_to @venue
-		else
-			render 'new'
-		end
+		respond to do |format|		
+			if @venue.save
+				format.html {redirect_to @venue}
+				format.json {render json: @venue}
+			else
+				format.html {render 'new'}
+				format.json {render json: @venue.errors, status: :not_found}
+			end
 	end
 
 	def update
 		@venue = EventVenue.find(params[:id])
-		@venue.update!(venue_params)
-		redirect_to @venue
+		respond to do |format|	
+			@venue.update!(venue_params)
+			format.html {redirect_to @venue}
+			format.json {render status: :no_content}
 	end
 
 	def destroy
 		@venue = EventVenue.find(params[:id])
-		@venue.destroy
-		redirect_to event_venues_path
+		respond to do |format|	
+			@venue.destroy
+			format.html {redirect_to @venue}
+			format.json {render status: :reset_content}
 	end
+
+	def index 
+		@venue = EventVenue.all
+	end
+	
+	def show
+		@venue = EventVenue.find(params[:id])
+	end
+
 
 end

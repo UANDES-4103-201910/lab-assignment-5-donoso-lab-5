@@ -8,23 +8,38 @@ class TicketsController < ApplicationController
 
 	def create
 		@ticket = Ticket.new(ticket_params)
-		if @ticket.save
-			redirect_to @ticket
-		else
-			render 'new'
-		end
+		respond to do |format|		
+			if @ticket.save
+				format.html {redirect_to @ticket}
+				format.json {render json: @ticket}
+			else
+				format.html {render 'new'}
+				format.json {render json: @ticket.errors, status: :not_found}
+			end
 	end
 
 	def update
 		@ticket = Ticket.find(params[:id])
-		@ticket.update!(ticket_params)
-		redirect_to @ticket
+		respond to do |format|	
+			@ticket.update!(ticket_params)
+			format.html {redirect_to @tiicket}
+			format.json {render status: :no_content}
 	end
 
 	def destroy
 		@ticket = Ticket.find(params[:id])
-		@ticket.destroy
-		redirect_to tickets_path
+		respond to do |format|	
+			@ticket.destroy
+			format.html {redirect_to @ticket}
+			format.json {render status: :reset_content}
 	end
+	def index 
+		@ticket = Ticket.all
+	end
+	
+	def show
+		@ticket = Ticket.find(params[:id])
+	end
+
 
 end

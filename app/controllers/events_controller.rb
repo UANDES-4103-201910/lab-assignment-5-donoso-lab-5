@@ -8,23 +8,38 @@ class EventsController < ApplicationController
 
 	def create
 		@event = Event.new(event_params)
-		if @event.save
-			redirect_to @event
-		else
-			render 'new'
-		end
+		respond to do |format|		
+			if @event.save
+				format.html {redirect_to @event}
+				format.json {render json: @event}
+			else
+				format.html {render 'new'}
+				format.json {render json: @event.errors, status: :not_found}
+			end
 	end
 
 	def update
 		@event = Event.find(params[:id])
-		@event.update!(event_params)
-		redirect_to @event
+		respond to do |format|	
+			@event.update!(event_params)
+			format.html {redirect_to @event}
+			format.json {render status: :no_content}
 	end
 
 	def destroy
 		@event = Event.find(params[:id])
-		@event.destroy
-		redirect_to events_path
+		respond to do |format|	
+			@event.destroy
+			format.html {redirect_to @event}
+			format.json {render status: :reset_content}
+	end
+	
+	def index 
+		@event = Event.all
+	end
+	
+	def show
+		@event = Event.find(params[:id])
 	end
 
 end
